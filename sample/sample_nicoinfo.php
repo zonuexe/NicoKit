@@ -1,5 +1,5 @@
 <?php
-require_once 'NicoInfo.php';
+require_once '../NicoInfo.php';
 
 $nico = new NicoInfo('http://www.nicovideo.jp/watch/sm26374280');
 echo $id;
