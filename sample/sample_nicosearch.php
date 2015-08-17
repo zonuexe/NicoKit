@@ -1,5 +1,5 @@
 <?php
-require_once '../NicoSearch.php';
+require_once dirname(__DIR__) . '/NicoSearch.php';
 
 $nico = new NicoSearch('アプリケーション名');
 $nico->query = '初音ミク';

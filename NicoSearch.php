@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*******************************************************************
 *
 *
@@ -17,8 +17,6 @@
 *
 *
 ********************************************************************/
-// エンドポイント
-define('NICO_SEARCH', 'http://api.search.nicovideo.jp/api/');
 
 // 検索対象
 define('TITLE', 'title');
@@ -38,6 +36,8 @@ define('DESC', 'desc'); // 降順
 define('ASC', 'asc'); // 昇順
 
 class NicoSearch {
+    const ENDPOINT = 'http://api.search.nicovideo.jp/api/';
+
 	/**
 	 * プロパティ
 	 */
@@ -110,7 +110,7 @@ class NicoSearch {
 			)
 		);
 
-		$api_data = file_get_contents(NICO_SEARCH, false, $context);
+		$api_data = file_get_contents(NicoSearch::ENDPOINT, false, $context);
 		$json = $this->json_parse($api_data);
 		return $json;
 	}

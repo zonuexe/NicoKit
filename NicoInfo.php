@@ -10,12 +10,13 @@
 *
 *
 ************************************************************/
-define('NICO_INFO', 'http://ext.nicovideo.jp/api/getthumbinfo/');
 
 // ---------------------------------------------------------
 // ニコニコ動画情報クラス
 // ---------------------------------------------------------
 class NicoInfo {
+    const ENDPOINT = 'http://ext.nicovideo.jp/api/getthumbinfo/';
+
 	/**
 	 * プロパティ
 	 */
@@ -84,7 +85,7 @@ class NicoInfo {
 
 	// API情報取得
 	public function getAPI($video_id) {
-		$api_data  = simplexml_load_file(NICO_INFO.$video_id);
+		$api_data  = simplexml_load_file(NicoInfo::ENDPOINT . $video_id);
 		$nico = $api_data->thumb;
 
 		// 動画情報をプロパティに格納

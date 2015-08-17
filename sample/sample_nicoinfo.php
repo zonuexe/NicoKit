@@ -1,8 +1,8 @@
 <?php
-require_once '../NicoInfo.php';
+require_once dirname(__DIR__) . '/NicoInfo.php';
 
 $nico = new NicoInfo('http://www.nicovideo.jp/watch/sm26374280');
-echo $id;
+
 echo $nico->video_id.'<br />';
 echo $nico->title.'<br />';
 echo $nico->description.'<br />';
