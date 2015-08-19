@@ -7,40 +7,72 @@
 * @author Yuki-Yamamoto
 *
 * $nico = new NicoSearch('アプリケーション名');
+* $nico->service = '対象サービス：【例: NicoSearch::VIDEO】';
 * $nico->query = '検索キーワード';
-* $nico->feild = array('検索対象 【例: TITLE】');
-* $nico->sort = '並べ替えフィールド名 【例: UPLOAD_TIME】';
-* $nico->order = '並べ替え順序: DESC もしくは ASC';
+* $nico->feild = array('検索対象 【例: NicoSearch::TITLE】');
+* $nico->sort = '並べ替えフィールド名 【例: NicoSearch::UPLOAD_TIME】';
+* $nico->order = '並べ替え順序: 【例：NicoSearch::DESC】';
 * $nico->res_start = 'レスポンス取得開始位置 【0～1600】';
 * $nico->res_size = 'レスポンスの数 【0 ~ 100】';
 * $api = $nico->get_api();
 *
 *
 ********************************************************************/
-
-// 検索対象
-define('TITLE', 'title');
-define('TAG', 'tags');
-define('DESCRIPTION', 'description');
-
-// 並べ替えフィールド名
-define('COMMENT_TIME', 'last_comment_time'); // コメント時間
-define('VIEW_COUNTER', 'view_counter'); // 再生数
-define('UPLOAD_TIME', 'start_time'); // 投稿日時
-define('MYLIST_COUNTER', 'mylist_counter'); // マイリス数
-define('COMMENT_COUNTER', 'comment_counter'); // コメント数
-define('MOVIE_LENGTH', 'length_seconds'); // 再生時間
-
-// 並べ替え順序
-define('DESC', 'desc'); // 降順
-define('ASC', 'asc'); // 昇順
-
 class NicoSearch {
+	/**
+	 * 定数
+	 */
+	// エンドポイント
     const ENDPOINT = 'http://api.search.nicovideo.jp/api/';
+ 
+    //　対象サービス
+    const VIDEO = 'video';
+    const LIVE = 'live';
+    const ILLUST = 'illust';
+    const MANGA = 'manga';
+    const BOOK = 'book';
+    const CHANNEl = 'channel';
+    const CHANNELARTICLE = 'channelarticle';
+    const NEWS = 'news';
+
+    // 検索対象
+    const TITLE = 'title';
+    const TAG = 'tags';
+    const DESCRIPTION = 'description';
+    const BODY = 'body'; // ニュース専用
+    const CAPTION = 'caption'; //ニュース用
+
+    // 並べ替えフィールド名
+    const COMMENT_TIME = 'last_comment_time';
+    const VIEW_COUNTER = 'view_counter';
+    const UPLOAD_TIME = 'start_time';
+    const MYLIST_COUNTER = 'mylist_counter';
+    const COMMENT_COUNTER = 'comment_counter';
+    const MOVIE_LENGTH = 'length_seconds';
+
+    // 並べ替え順序
+    const DESC = 'desc';
+    const ASC = 'asc';
+
+    // 返却される項目
+    const JOIN = array(
+		"cmsid", 
+		"title", 
+		"tags",
+		"thumbnail_url",
+		"start_time",
+		"view_counter",
+		"comment_counter",
+		"mylist_counter",
+		"length_seconds"
+	);
 
 	/**
 	 * プロパティ
 	 */
+	// 対象サービス
+	public $service;
+
 	// 検索キーワード
 	public $query;
 
@@ -62,9 +94,6 @@ class NicoSearch {
 	// アプリケーション名
 	public $app_name;
 
-	// 検索キーワードに該当するデータ数
-	public $total;
-
 	/**
 	 * メソッド
 	 */
@@ -78,19 +107,9 @@ class NicoSearch {
 		// POSTデータ
 		$post_data = array(
 			"query" => $this->query,
-			"service" => array('video'),
+			"service" => array($this->service),
 			"search" => $this->feild,
-			"join" => array(
-						"cmsid", 
-						"title", 
-						"view_counter", 
-						"tags",
-						"start_time",
-						"thumbnail_url",
-						"comment_counter",
-						"mylist_counter",
-						"length_seconds"
-						),
+			"join" => NicoSearch::JOIN,
 			"sort_by" => $this->sort,
 			"order" => $this->order,
 			"from" => $this->res_start,
@@ -120,11 +139,6 @@ class NicoSearch {
 		$data = explode("\n", $api_data);
 
 		if(!strpos($data[0], 'errid')) {
-			// 該当するデータがなかった場合、エラー内容を返却
-			if($this->total === 0) {
-				$err_id = 404;
-				return $err_id;
-			}
 			// 複数のJSONをまとめてJSONにする
 			$json = array();
 			$num = 0;
@@ -147,9 +161,7 @@ class NicoSearch {
 			}
 			return json_encode($json);
 		} else {
-			// エラーがあった場合、エラー内容を返却
-			$err_id = $status_obj->err_id;
-			return $err_id;
+			return false;
 		}
 	}
 }
